@@ -1,0 +1,16 @@
+plugins {
+  id 'java'
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+apply from: "$rootDir/gradle/java.gradle"
+apply plugin: 'call-site-instrumentation'
+
+dependencies {
+  compileOnly group: 'org.apache.shardingsphere.elasticjob', name: 'elasticjob-executor-kernel', version: '3.0.0'
+  compileOnly group: 'org.apache.shardingsphere.elasticjob', name: 'elasticjob-infra-common', version: '3.0.0'
+}

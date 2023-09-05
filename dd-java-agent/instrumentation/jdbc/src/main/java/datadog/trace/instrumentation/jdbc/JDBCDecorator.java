@@ -1,6 +1,7 @@
 package datadog.trace.instrumentation.jdbc;
 
 import static datadog.trace.bootstrap.instrumentation.api.Tags.DB_OPERATION;
+import static datadog.trace.bootstrap.instrumentation.api.Tags.PEER_PORT;
 
 import datadog.trace.api.Config;
 import datadog.trace.api.DDSpanId;
@@ -123,6 +124,7 @@ public class JDBCDecorator extends DatabaseClientDecorator<DBInfo> {
     final DBInfo dbInfo = parseDBInfo(connection, contextStore);
     if (dbInfo != null) {
       processDatabaseType(span, dbInfo.getType());
+      span.setTag(PEER_PORT,dbInfo.getPort());
     }
     return super.onConnection(span, dbInfo);
   }

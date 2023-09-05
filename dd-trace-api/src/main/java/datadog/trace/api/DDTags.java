@@ -53,4 +53,6 @@ public class DDTags {
 
   public static final String PROFILING_ENABLED = "_dd.profiling.enabled";
   public static final String BASE_SERVICE = "_dd.base_service";
+
+  public static final String JOB_NAME = "job.";
 }
