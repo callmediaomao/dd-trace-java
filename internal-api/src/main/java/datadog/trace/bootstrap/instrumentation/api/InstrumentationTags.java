@@ -105,6 +105,12 @@ public class InstrumentationTags {
   public static final String TWILIO_STATUS = "twilio.status";
   public static final String TWILIO_PARENT_SID = "twilio.parentSid";
   public static final String DBM_TRACE_INJECTED = "_dd.dbm_trace_injected";
+
+  public static final String JOB_TASK_ID = "elasticjob.task_id";
+  public static final String JOB_ITEM = "elasticjob.item";
+  public static final String JOB_SHARDING_TOTAL_COUNT = "elasticjob.sharding_total_count";
+  public static final String JOB_SHARDING_ITEM_PARAMETERS = "elasticjob.sharding_item_parameters";
+  public static final String JOB_NAME = "elasticjob.task_name";
   public static final UTF8BytesString DD_MEASURED = UTF8BytesString.create("_dd.measured");
   public static final UTF8BytesString DD_TOP_LEVEL = UTF8BytesString.create("_dd.top_level");
   public static final UTF8BytesString DD_PARTIAL_VERSION =

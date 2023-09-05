@@ -1,0 +1,15 @@
+plugins {
+  id 'java'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+apply from: "$rootDir/gradle/java.gradle"
+apply plugin: 'call-site-instrumentation'
+
+dependencies {
+  compileOnly group: 'com.dangdang', name: 'elastic-job-common-core', version: '[2.0.0,3.0.0)'
+}

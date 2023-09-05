@@ -44,4 +44,6 @@ public class InternalSpanTypes {
       UTF8BytesString.create(DDSpanTypes.TEST_SESSION_END);
   public static final UTF8BytesString VULNERABILITY =
       UTF8BytesString.create(DDSpanTypes.VULNERABILITY);
+
+  public static final CharSequence DATASOURCE = UTF8BytesString.create(DDSpanTypes.DATASOURCE);
 }
