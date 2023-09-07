@@ -20,7 +20,18 @@ package datadog.trace.instrumentation.dubbo_2_7x;
 
 import com.google.auto.service.AutoService;
 import datadog.trace.agent.tooling.Instrumenter;
+import datadog.trace.bootstrap.ContextStore;
+import datadog.trace.bootstrap.InstrumentationContext;
+import net.bytebuddy.asm.Advice;
+import org.apache.dubbo.common.URL;
+import org.apache.dubbo.remoting.transport.AbstractServer;
 
+import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+
+import static java.util.Collections.singletonMap;
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
 @AutoService(Instrumenter.class)
@@ -33,6 +44,17 @@ public class AbstractServerInstrumentation extends Instrumenter.Tracing
     super("apache-dubbo");
   }
 
+  @Override
+  public String[] helperClassNames() {
+    return new String[]{
+        packageName+".DubboInfo",
+    };
+  }
+
+  @Override
+  public Map<String, String> contextStore() {
+    return singletonMap("org.apache.dubbo.remoting.transport.AbstractServer",DubboInfo.class.getName());
+  }
 
   @Override
   public String instrumentedType() {
@@ -49,7 +71,41 @@ public class AbstractServerInstrumentation extends Instrumenter.Tracing
       );
   }
 
-  // TODO tag注入
   public static class AbstractServerAdvice {
+    @Advice.OnMethodExit
+    public static void after(@Advice.Argument(0) final URL url,
+                             @Advice.This final AbstractServer objInst) {
+      try {
+        Field executorField = AbstractServer.class.getDeclaredField("executor");
+        executorField.setAccessible(true);
+        //通过反射去获取
+        ExecutorService executor = (ExecutorService) executorField.get(objInst);
+        int port = url.getPort();
+
+        if (!(executor instanceof ThreadPoolExecutor)) {
+          return;
+        }
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
+        String threadPoolName = String.format("DubboServerHandler-%s", port);
+        //覆盖掉原有的
+        ContextStore<AbstractServer, DubboInfo> contextStore = InstrumentationContext.get(AbstractServer.class, DubboInfo.class);
+        //每次都覆盖
+        DubboInfo dubboInfo = contextStore.get(objInst);
+        if (dubboInfo == null){
+          dubboInfo = new DubboInfo();
+        }
+        dubboInfo.setThreadPoolName(threadPoolName);
+        dubboInfo.setCorePoolSize(threadPoolExecutor.getCorePoolSize());
+        dubboInfo.setMaximumPoolSize(threadPoolExecutor.getMaximumPoolSize());
+        dubboInfo.setLargestPoolSize(threadPoolExecutor.getLargestPoolSize());
+        dubboInfo.setPoolSize(threadPoolExecutor.getPoolSize());
+        dubboInfo.setQueueSize(threadPoolExecutor.getQueue().size());
+        dubboInfo.setActiveCount(threadPoolExecutor.getActiveCount());
+        dubboInfo.setTaskCount(threadPoolExecutor.getTaskCount());
+        dubboInfo.setCompletedTaskCount(threadPoolExecutor.getCompletedTaskCount());
+        contextStore.put(objInst,dubboInfo);
+      } catch (Exception e) {
+      }
+    }
   }
 }

@@ -8,6 +8,7 @@ muzzle {
   }
 }
 
+// 该 plugin 能够捕获3.x
 
 dependencies {
   compileOnly group: 'org.apache.dubbo', name: 'dubbo', version: '2.7.0'

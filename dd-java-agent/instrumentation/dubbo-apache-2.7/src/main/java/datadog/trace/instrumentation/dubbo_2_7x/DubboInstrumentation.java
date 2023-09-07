@@ -22,13 +22,8 @@ import com.google.auto.service.AutoService;
 import datadog.trace.agent.tooling.Instrumenter;
 import datadog.trace.bootstrap.instrumentation.api.AgentScope;
 import net.bytebuddy.asm.Advice;
-import net.bytebuddy.description.method.MethodDescription;
-import net.bytebuddy.matcher.ElementMatcher;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
-import org.apache.dubbo.rpc.proxy.AbstractProxyInvoker;
-
-import java.util.Collections;
 
 import static datadog.trace.instrumentation.dubbo_2_7x.DubboDecorator.DECORATE;
 import static net.bytebuddy.matcher.ElementMatchers.*;
@@ -37,7 +32,7 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
 public class DubboInstrumentation extends Instrumenter.Tracing
     implements Instrumenter.ForSingleType {
 
-    private static final String ENHANCE_CLASS = "org.apache.dubbo.monitor.support.MonitorFilter";
+  private static final String ENHANCE_CLASS = "org.apache.dubbo.monitor.support.MonitorFilter";
 
   public DubboInstrumentation() {
     super("apache-dubbo");
@@ -55,9 +50,9 @@ public class DubboInstrumentation extends Instrumenter.Tracing
         isMethod()
             .and(named("invoke"))
             .and(takesArguments(2)
-                .and(takesArgument(0,named("org.apache.dubbo.rpc.Invoker")))
-                .and(takesArgument(1,named("org.apache.dubbo.rpc.Invocation")))),
-        DubboInstrumentation.class.getName()+"$DubboAdvice"
+                .and(takesArgument(0, named("org.apache.dubbo.rpc.Invoker")))
+                .and(takesArgument(1, named("org.apache.dubbo.rpc.Invocation")))),
+        DubboInstrumentation.class.getName() + "$DubboAdvice"
 
     );
   }
@@ -68,7 +63,7 @@ public class DubboInstrumentation extends Instrumenter.Tracing
     @Advice.OnMethodEnter(suppress = Throwable.class)
     public static AgentScope beginRequest(@Advice.Argument(1) final Invocation invocation,
                                           @Advice.Argument(0) final Invoker invoker
-                                          ) {
+    ) {
       AgentScope scope = DECORATE.buildSpan(invoker, invocation);
       return scope;
     }
@@ -81,7 +76,6 @@ public class DubboInstrumentation extends Instrumenter.Tracing
       }
       DECORATE.onError(scope.span(), throwable);
       DECORATE.beforeFinish(scope.span());
-
       scope.close();
       scope.span().finish();
     }
