@@ -72,6 +72,7 @@ public class DruidAddDataSourceInstrumentation extends Instrumenter.Tracing
         @Advice.Argument(0) final Object druidDataSource
     ) {
       try {
+        // todo 此处应该直接拿connection而不是通过datasource去获取
         AgentSpan span = startSpan("datasource", "datasource.addDataSource");
         DataSourceDecorator.DECORATE.afterStart(span);
         Connection connection = ((DruidDataSource)druidDataSource).getConnection();

@@ -1,0 +1,6 @@
+apply from: "$rootDir/gradle/java.gradle"
+
+dependencies {
+  compileOnly group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '8.0.36'
+}
+

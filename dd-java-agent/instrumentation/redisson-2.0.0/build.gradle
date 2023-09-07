@@ -10,6 +10,7 @@ muzzle {
 }
 
 apply from: "$rootDir/gradle/java.gradle"
+apply plugin: 'call-site-instrumentation'
 
 addTestSuiteForDir('latestRedisson20Test', 'test/redisson20')
 addTestSuiteExtendingForDir('latestRedisson20ForkedTest', 'latestRedisson20Test', 'test/redisson20')

@@ -96,6 +96,11 @@ public class InstrumentationTags {
   public static final String QUARTZ_JOB_GROUP = "quartz.job.group";
   public static final String QUARTZ_TRIGGER_NAME = "quartz.trigger.name";
   public static final String QUARTZ_TRIGGER_GROUP = "quartz.trigger.group";
+
+  public static final String LOCK_NAME = "lock.name";
+
+  public static final String LEASE_TIME = "lease.time";
+
   public static final String REQUEST_PREDICATE = "request.predicate";
   public static final String VIEW_NAME = "view.name";
   public static final String VIEW_TYPE = "view.type";

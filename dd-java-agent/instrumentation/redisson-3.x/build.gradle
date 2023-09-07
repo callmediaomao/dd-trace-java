@@ -1,0 +1,11 @@
+
+repositories {
+  mavenCentral()
+}
+
+apply from: "$rootDir/gradle/java.gradle"
+apply plugin: 'call-site-instrumentation'
+
+dependencies {
+  compileOnly group: 'org.redisson', name: 'redisson', version: '3.6.0'
+}
