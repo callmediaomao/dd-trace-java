@@ -1,5 +1,13 @@
 apply from: "$rootDir/gradle/java.gradle"
 
+muzzle {
+  pass {
+    group = "org.apache.tomcat.embed"
+    module = "tomcat-embed-core"
+    versions = "[7.0.0,8.0.36]"
+  }
+}
+
 dependencies {
   compileOnly group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '8.0.36'
 }

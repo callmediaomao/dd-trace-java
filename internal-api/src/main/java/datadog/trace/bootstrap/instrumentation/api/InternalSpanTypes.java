@@ -11,6 +11,8 @@ public class InternalSpanTypes {
 
   public static final CharSequence SQL = UTF8BytesString.create(DDSpanTypes.SQL);
   public static final CharSequence MONGO = UTF8BytesString.create(DDSpanTypes.MONGO);
+
+  public static final CharSequence CLICKHOUSE = UTF8BytesString.create(DDSpanTypes.CLICKHOUSE);
   public static final CharSequence CASSANDRA = UTF8BytesString.create(DDSpanTypes.CASSANDRA);
   public static final CharSequence COUCHBASE =
       UTF8BytesString.create(DDSpanTypes.COUCHBASE); // Using generic for now.

@@ -414,7 +414,8 @@ include ':dd-java-agent:instrumentation:ons-client'
 include ':dd-java-agent:instrumentation:dubbo-alibaba'
 include ':dd-java-agent:instrumentation:dubbo-apache-2.7'
 include ':dd-java-agent:instrumentation:axis-1'
-include ':dd-java-agent:instrumentation:tomcat-7.x-8.x'
+//include ':dd-java-agent:instrumentation:tomcat-7.x-8.x'
+include ':dd-java-agent:instrumentation:clickhouse-0.3.1'
 //include ':dd-java-agent:instrumentation:taobao-hsf'  阿里云仓库找不到该依赖
 
 // benchmark

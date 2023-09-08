@@ -10,6 +10,8 @@ public class DDSpanTypes {
 
   public static final String SQL = "sql";
   public static final String MONGO = "mongodb";
+
+  public static final String CLICKHOUSE = "clickhouse";
   public static final String CASSANDRA = "cassandra";
   public static final String COUCHBASE = "db"; // Using generic for now.
   public static final String REDIS = "redis";

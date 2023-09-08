@@ -1,0 +1,14 @@
+plugins {
+  id 'java'
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+apply from: "$rootDir/gradle/java.gradle"
+
+dependencies {
+  compileOnly group: 'ru.yandex.clickhouse', name: 'clickhouse-jdbc', version: '0.3.1-patch'
+}
