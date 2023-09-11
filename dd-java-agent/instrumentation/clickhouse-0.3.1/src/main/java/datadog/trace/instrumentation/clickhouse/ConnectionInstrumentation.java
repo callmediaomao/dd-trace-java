@@ -71,12 +71,13 @@ public class ConnectionInstrumentation extends Instrumenter.Tracing
 
   @Override
   public void adviceTransformations(AdviceTransformation transformation) {
-    transformation.applyAdvice(
+    // module jdbc's StatementInstrumentation  can take the span
+    /*transformation.applyAdvice(
         isMethod()
             .and(named(CREATE_CLICKHOUSE_STATEMENT_METHOD_NAME)
                 .or(named(CREATE_STATEMENT_METHOD_NAME)))
         , packageName + ".CreateStatementAdvice"
-    );
+    );*/
 
     transformation.applyAdvice(
         isMethod()

@@ -11,6 +11,7 @@ import ru.yandex.clickhouse.ClickHouseConnectionImpl;
 
 import static datadog.trace.bootstrap.instrumentation.api.AgentTracer.activateSpan;
 import static datadog.trace.bootstrap.instrumentation.api.AgentTracer.startSpan;
+import static datadog.trace.bootstrap.instrumentation.api.Tags.DB_OPERATION;
 import static datadog.trace.instrumentation.clickhouse.ClickhouseDecorator.DECORATE;
 
 public class PrepareStatementAdvice {
@@ -35,6 +36,8 @@ public class PrepareStatementAdvice {
       DECORATE.onConnection(
           span, dbInfo);
       DECORATE.onStatement(span, sql);
+      CharSequence charSequence = extractOperation(sql);
+      span.setTag(DB_OPERATION,charSequence);
       return activateSpan(span);
     } catch (Exception e) {
       // if we can't get the connection for any reason
@@ -53,5 +56,53 @@ public class PrepareStatementAdvice {
     scope.close();
     scope.span().finish();
     CallDepthThreadLocalMap.reset(ClickHouseConnectionImpl.class);
+  }
+
+  public static CharSequence extractOperation(CharSequence sql) {
+    if (null == sql) {
+      return null;
+    }
+    int start = 0;
+    boolean insideComment = false;
+    for (int i = 0; i < sql.length(); ++i) {
+      char c = sql.charAt(i);
+      if (c == '/' && i + 1 < sql.length() && sql.charAt(i + 1) == '*') {
+        insideComment = true;
+        i++;
+        continue;
+      }
+      if (c == '*' && i + 1 < sql.length() && sql.charAt(i + 1) == '/') {
+        insideComment = false;
+        i++;
+        continue;
+      }
+      if (!insideComment && Character.isAlphabetic(c)) {
+        start = i;
+        break;
+      }
+    }
+
+    int firstWhitespace = -1;
+    for (int i = start; i < sql.length(); ++i) {
+      char c = sql.charAt(i);
+      if (c == '/' && i + 1 < sql.length() && sql.charAt(i + 1) == '*') {
+        insideComment = true;
+        i++;
+        continue;
+      }
+      if (c == '*' && i + 1 < sql.length() && sql.charAt(i + 1) == '/') {
+        insideComment = false;
+        i++;
+        continue;
+      }
+      if (!insideComment && Character.isWhitespace(c)) {
+        firstWhitespace = i;
+        break;
+      }
+    }
+    if (firstWhitespace > -1) {
+      return sql.subSequence(start, firstWhitespace);
+    }
+    return null;
   }
 }

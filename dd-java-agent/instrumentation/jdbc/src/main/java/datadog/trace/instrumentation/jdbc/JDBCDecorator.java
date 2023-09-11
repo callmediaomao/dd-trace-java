@@ -1,8 +1,5 @@
 package datadog.trace.instrumentation.jdbc;
 
-import static datadog.trace.bootstrap.instrumentation.api.Tags.DB_OPERATION;
-import static datadog.trace.bootstrap.instrumentation.api.Tags.PEER_PORT;
-
 import datadog.trace.api.Config;
 import datadog.trace.api.DDSpanId;
 import datadog.trace.bootstrap.ContextStore;
@@ -14,14 +11,18 @@ import datadog.trace.bootstrap.instrumentation.decorator.DatabaseClientDecorator
 import datadog.trace.bootstrap.instrumentation.jdbc.DBInfo;
 import datadog.trace.bootstrap.instrumentation.jdbc.DBQueryInfo;
 import datadog.trace.bootstrap.instrumentation.jdbc.JDBCConnectionUrlParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static datadog.trace.bootstrap.instrumentation.api.Tags.DB_OPERATION;
+import static datadog.trace.bootstrap.instrumentation.api.Tags.PEER_PORT;
 
 public class JDBCDecorator extends DatabaseClientDecorator<DBInfo> {
 
@@ -79,7 +80,9 @@ public class JDBCDecorator extends DatabaseClientDecorator<DBInfo> {
 
   @Override
   protected String service() {
-    return "jdbc"; // Overridden by onConnection
+    // 默认采用配置的serviceName
+    return Config.get().getServiceName();
+//    return "jdbc"; // Overridden by onConnection
   }
 
   @Override
@@ -228,7 +231,8 @@ public class JDBCDecorator extends DatabaseClientDecorator<DBInfo> {
   @Override
   protected void postProcessServiceAndOperationName(
       AgentSpan span, DatabaseClientDecorator.NamingEntry namingEntry) {
-    span.setServiceName(namingEntry.getService());
+    // 该处会显示为clickhouse组件名称
+//    span.setServiceName(namingEntry.getService());
     span.setOperationName(namingEntry.getOperation());
   }
 }
