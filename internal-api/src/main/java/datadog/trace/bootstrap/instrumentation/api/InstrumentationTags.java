@@ -116,6 +116,16 @@ public class InstrumentationTags {
   public static final String JOB_SHARDING_TOTAL_COUNT = "elasticjob.sharding_total_count";
   public static final String JOB_SHARDING_ITEM_PARAMETERS = "elasticjob.sharding_item_parameters";
   public static final String JOB_NAME = "elasticjob.task_name";
+
+  public static final String SPRING_ISOLATIONLEVEL = "spring.tx_isolation_level";
+  public static final String SPRING_PROPAGATIONBEHAVIOR = "spring.tx_propagation_behavior";
+  public static final String SPRING_TIMEOUT = "spring.tx_timeout";
+  public static final String SPRING_ISNEWTRANSACTION = "spring.is_new_transaction";
+  public static final String SPRING_HASAVEPOINT = "spring.has_savepoint";
+  public static final String SPRING_ISROLLBACKONLY = "spring.is_rollback_only";
+  public static final String SPRING_ISCOMPLETED = "spring.is_completed";
+
+
   public static final UTF8BytesString DD_MEASURED = UTF8BytesString.create("_dd.measured");
   public static final UTF8BytesString DD_TOP_LEVEL = UTF8BytesString.create("_dd.top_level");
   public static final UTF8BytesString DD_PARTIAL_VERSION =

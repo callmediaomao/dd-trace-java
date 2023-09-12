@@ -1,36 +1,7 @@
 package datadog.trace.bootstrap;
 
-import static datadog.trace.api.ConfigDefaults.DEFAULT_STARTUP_LOGS_ENABLED;
-import static datadog.trace.api.Platform.getRuntimeVendor;
-import static datadog.trace.api.Platform.isJavaVersionAtLeast;
-import static datadog.trace.api.Platform.isOracleJDK8;
-import static datadog.trace.bootstrap.Library.WILDFLY;
-import static datadog.trace.bootstrap.Library.detectLibraries;
-import static datadog.trace.util.AgentThreadFactory.AgentThread.JMX_STARTUP;
-import static datadog.trace.util.AgentThreadFactory.AgentThread.PROFILER_STARTUP;
-import static datadog.trace.util.AgentThreadFactory.AgentThread.TRACE_STARTUP;
-import static datadog.trace.util.AgentThreadFactory.newAgentThread;
-import static datadog.trace.util.Strings.getResourceName;
-import static datadog.trace.util.Strings.propertyNameToSystemPropertyName;
-import static datadog.trace.util.Strings.toEnvVar;
-
-import datadog.trace.api.Config;
-import datadog.trace.api.EndpointCheckpointer;
-import datadog.trace.api.Platform;
-import datadog.trace.api.StatsDClientManager;
-import datadog.trace.api.WithGlobalTracer;
-import datadog.trace.api.config.AppSecConfig;
-import datadog.trace.api.config.CiVisibilityConfig;
-import datadog.trace.api.config.CwsConfig;
-import datadog.trace.api.config.DebuggerConfig;
-import datadog.trace.api.config.GeneralConfig;
-import datadog.trace.api.config.IastConfig;
-import datadog.trace.api.config.JmxFetchConfig;
-import datadog.trace.api.config.ProfilingConfig;
-import datadog.trace.api.config.RemoteConfigConfig;
-import datadog.trace.api.config.TraceInstrumentationConfig;
-import datadog.trace.api.config.TracerConfig;
-import datadog.trace.api.config.UsmConfig;
+import datadog.trace.api.*;
+import datadog.trace.api.config.*;
 import datadog.trace.api.gateway.RequestContextSlot;
 import datadog.trace.api.gateway.SubscriptionService;
 import datadog.trace.api.profiling.Timer;
@@ -43,6 +14,9 @@ import datadog.trace.bootstrap.instrumentation.jfr.InstrumentationBasedProfiling
 import datadog.trace.util.AgentTaskScheduler;
 import datadog.trace.util.AgentThreadFactory.AgentThread;
 import datadog.trace.util.throwable.FatalAgentMisconfigurationError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -54,8 +28,14 @@ import java.security.CodeSource;
 import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static datadog.trace.api.ConfigDefaults.DEFAULT_STARTUP_LOGS_ENABLED;
+import static datadog.trace.api.Platform.*;
+import static datadog.trace.bootstrap.Library.WILDFLY;
+import static datadog.trace.bootstrap.Library.detectLibraries;
+import static datadog.trace.util.AgentThreadFactory.AgentThread.*;
+import static datadog.trace.util.AgentThreadFactory.newAgentThread;
+import static datadog.trace.util.Strings.*;
 
 /**
  * Agent start up logic.
@@ -154,6 +134,7 @@ public class Agent {
       return;
     }
 
+    // 解析javaagent参数 并将key 和 Value （setProperty）设置进变量，假如环境变量已经设置，则跳过  优先级： 环境变量 > javaagent变量
     if (agentArgs != null && !agentArgs.isEmpty()) {
       injectAgentArgsConfig(agentArgs);
     }
