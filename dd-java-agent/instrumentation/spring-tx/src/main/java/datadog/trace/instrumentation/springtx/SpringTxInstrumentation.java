@@ -19,18 +19,15 @@ package datadog.trace.instrumentation.springtx;
 
 import com.google.auto.service.AutoService;
 import datadog.trace.agent.tooling.Instrumenter;
-import net.bytebuddy.description.type.TypeDescription;
-import net.bytebuddy.matcher.ElementMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static datadog.trace.agent.tooling.bytebuddy.matcher.HierarchyMatchers.extendsClass;
 import static datadog.trace.agent.tooling.bytebuddy.matcher.NameMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.*;
 
 @AutoService(Instrumenter.class)
 public class SpringTxInstrumentation extends Instrumenter.Tracing
-    implements Instrumenter.ForTypeHierarchy {
+    implements Instrumenter.ForSingleType {
 
   private static final Logger log = LoggerFactory.getLogger(SpringTxInstrumentation.class);
 
@@ -49,40 +46,34 @@ public class SpringTxInstrumentation extends Instrumenter.Tracing
     };
   }
 
-//  @Override
-//  public String instrumentedType() {
-//    return "org.springframework.transaction.support.AbstractPlatformTransactionManager";
-//  }
+  @Override
+  public String instrumentedType() {
+    return CLASS_NAME;
+  }
 
   @Override
   public void adviceTransformations(AdviceTransformation transformation) {
     transformation.applyAdvice(
         isMethod()
-            .and(named("getTransaction"))
-            .and(isPublic().and(isFinal()))
-            .and(takesArgument(0, named("org.springframework.transaction.TransactionDefinition")))
-        ,
-        packageName + "GetTransactionAdvice"
+            .and(named("getTransaction")),
+        packageName + ".GetTransactionAdvice"
     );
 
     transformation.applyAdvice(
         isMethod()
-            .and(named("commit").or(named("rollback")))
-            .and(isPublic().and(isFinal()))
-            .and(takesArgument(0, named("org.springframework.transaction.TransactionStatus")))
-        ,
-        packageName + "CommintOrRollbackAdvice"
+            .and(named("commit").or(named("rollback"))),
+        packageName + ".CommintOrRollbackAdvice"
     );
   }
 
 
-  @Override
-  public String hierarchyMarkerType() {
-    return CLASS_NAME;
-  }
-
-  @Override
-  public ElementMatcher<TypeDescription> hierarchyMatcher() {
-    return extendsClass(named(CLASS_NAME));
-  }
+//  @Override
+//  public String hierarchyMarkerType() {
+//    return CLASS_NAME;
+//  }
+//
+//  @Override
+//  public ElementMatcher<TypeDescription> hierarchyMatcher() {
+//    return extendsClass(named(CLASS_NAME));
+//  }
 }

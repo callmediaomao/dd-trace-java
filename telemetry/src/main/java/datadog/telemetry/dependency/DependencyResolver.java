@@ -1,5 +1,8 @@
 package datadog.telemetry.dependency;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,8 +15,6 @@ import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DependencyResolver {
 
@@ -32,6 +33,7 @@ public class DependencyResolver {
    */
   // package private for testing
   static List<Dependency> extractDependenciesFromURI(URI uri) {
+//    log.error("-------uri:{}--------",uri);
     String scheme = uri.getScheme();
     List<Dependency> dependencies = Collections.emptyList();
     try {

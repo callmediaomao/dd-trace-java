@@ -1,8 +1,5 @@
 package datadog.trace.agent.tooling;
 
-import static datadog.trace.agent.tooling.bytebuddy.matcher.GlobalIgnoresMatcher.globalIgnoresMatcher;
-import static net.bytebuddy.matcher.ElementMatchers.isDefaultFinalizer;
-
 import datadog.trace.agent.tooling.bytebuddy.SharedTypePools;
 import datadog.trace.agent.tooling.bytebuddy.matcher.DDElementMatchers;
 import datadog.trace.agent.tooling.bytebuddy.memoize.MemoizedMatchers;
@@ -16,15 +13,6 @@ import datadog.trace.bootstrap.FieldBackedContextAccessor;
 import datadog.trace.bootstrap.instrumentation.java.concurrent.ExcludeFilter;
 import datadog.trace.util.AgentTaskScheduler;
 import de.thetaphi.forbiddenapis.SuppressForbidden;
-import java.lang.instrument.ClassFileTransformer;
-import java.lang.instrument.Instrumentation;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.type.TypeDefinition;
@@ -34,6 +22,15 @@ import net.bytebuddy.matcher.LatentMatcher;
 import net.bytebuddy.utility.JavaModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.instrument.ClassFileTransformer;
+import java.lang.instrument.Instrumentation;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
+
+import static datadog.trace.agent.tooling.bytebuddy.matcher.GlobalIgnoresMatcher.globalIgnoresMatcher;
+import static net.bytebuddy.matcher.ElementMatchers.isDefaultFinalizer;
 
 public class AgentInstaller {
   private static final Logger log = LoggerFactory.getLogger(AgentInstaller.class);
@@ -322,7 +319,7 @@ public class AgentInstaller {
         final ClassLoader classLoader,
         final JavaModule module,
         final boolean loaded) {
-      //      log.debug("onIgnored {}", typeDescription.getName());
+            log.debug("-----onIgnored: {}, module: {}, loaded: {}", typeDescription.getName(),module.getActualName(),loaded);
     }
 
     @Override
@@ -331,7 +328,7 @@ public class AgentInstaller {
         final ClassLoader classLoader,
         final JavaModule module,
         final boolean loaded) {
-      //      log.debug("onComplete {}", typeName);
+            log.debug("-----onComplete: {},module: {}, loaded: {} ", typeName,module.getActualName(),loaded);
     }
 
     @Override
@@ -340,7 +337,7 @@ public class AgentInstaller {
         final ClassLoader classLoader,
         final JavaModule module,
         final boolean loaded) {
-      //      log.debug("onDiscovery {}", typeName);
+            log.debug("onDiscovery {},module: {}, loaded: {}", typeName,module.getActualName(),loaded);
     }
   }
 

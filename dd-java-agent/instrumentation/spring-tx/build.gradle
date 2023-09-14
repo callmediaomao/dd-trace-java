@@ -2,5 +2,5 @@ apply from: "$rootDir/gradle/java.gradle"
 apply plugin: 'call-site-instrumentation'
 
 dependencies {
-  compileOnly group: 'org.springframework', name: 'spring-tx', version: '5.0.4.RELEASE'
+  compileOnly group: 'org.springframework', name: 'spring-tx', version: '[5.0.4.RELEASE,5.1.10.RELEASE]'
 }
