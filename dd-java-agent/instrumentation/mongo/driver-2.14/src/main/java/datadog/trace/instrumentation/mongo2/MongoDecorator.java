@@ -1,13 +1,19 @@
 package datadog.trace.instrumentation.mongo2;
 
+import com.mongodb.DBCollection;
 import datadog.trace.api.Config;
 import datadog.trace.api.naming.SpanNaming;
 import datadog.trace.bootstrap.instrumentation.api.InternalSpanTypes;
 import datadog.trace.bootstrap.instrumentation.api.UTF8BytesString;
 import datadog.trace.bootstrap.instrumentation.decorator.ClientDecorator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MongoDecorator
     extends ClientDecorator {
+
+  public static Map<DBCollection,String> REMOTE_PEERS = new HashMap<>();
   private static final String DB_TYPE =
       SpanNaming.instance().namingSchema().database().normalizedName("mongo");
   private static final String SERVICE_NAME =

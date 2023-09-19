@@ -1,8 +1,6 @@
 package datadog.trace.instrumentation.mongo2;
 
 import com.mongodb.DBCollection;
-import datadog.trace.bootstrap.ContextStore;
-import datadog.trace.bootstrap.InstrumentationContext;
 import datadog.trace.bootstrap.instrumentation.api.AgentScope;
 import datadog.trace.bootstrap.instrumentation.api.AgentSpan;
 import net.bytebuddy.asm.Advice;
@@ -19,11 +17,11 @@ public class ReVoidMethodAdvice {
       @Advice.This final DBCollection dbCollection,
       @Advice.Origin final Method method
   ){
-    ContextStore<DBCollection, String> contextStore = InstrumentationContext.get(DBCollection.class, String.class);
-    String remotePeer = contextStore.get(dbCollection);
+    /*ContextStore<DBCollection, String> contextStore = InstrumentationContext.get(DBCollection.class, String.class);
+    String remotePeer = contextStore.get(dbCollection);*/
     AgentSpan agentSpan = startSpan(MongoDecorator.OPERATION_NAME);
     DECORATOR.afterStart(agentSpan);
-    agentSpan.setTag("remotePeer",remotePeer);
+    agentSpan.setTag("remotePeer",MongoDecorator.REMOTE_PEERS.get(dbCollection));
     DECORATOR.spanNameForMethod(method);
     return activateSpan(agentSpan);
   }

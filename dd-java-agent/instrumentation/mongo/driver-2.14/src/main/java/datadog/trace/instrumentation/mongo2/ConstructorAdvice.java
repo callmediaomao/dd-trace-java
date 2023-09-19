@@ -3,8 +3,6 @@ package datadog.trace.instrumentation.mongo2;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.ServerAddress;
-import datadog.trace.bootstrap.ContextStore;
-import datadog.trace.bootstrap.InstrumentationContext;
 import net.bytebuddy.asm.Advice;
 
 import java.util.List;
@@ -20,7 +18,8 @@ public class ConstructorAdvice {
     for (ServerAddress address : servers) {
       peers.append(address.getHost()).append(":").append(address.getPort()).append(";");
     }
-    ContextStore<DBCollection, String> contextStore = InstrumentationContext.get(DBCollection.class, String.class);
-    contextStore.put(dbCollection,peers.subSequence(0, peers.length() - 1).toString());
+    /*ContextStore<DBCollection, String> contextStore = InstrumentationContext.get(DBCollection.class, String.class);
+    contextStore.put(dbCollection,peers.subSequence(0, peers.length() - 1).toString());*/
+    MongoDecorator.REMOTE_PEERS.put(dbCollection,peers.subSequence(0, peers.length() - 1).toString());
   }
 }

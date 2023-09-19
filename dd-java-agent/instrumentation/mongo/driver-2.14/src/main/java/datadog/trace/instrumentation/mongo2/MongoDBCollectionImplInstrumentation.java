@@ -59,10 +59,10 @@ public class MongoDBCollectionImplInstrumentation extends Instrumenter.Tracing
   @Override
   public void adviceTransformations(AdviceTransformation transformation) {
     // 此处默认所有的remotepeers拿的是dbcollection的
-//    transformation.applyAdvice(
-//        isConstructor(),
-//        packageName+".ConstructorAdvice"
-//    );
+    transformation.applyAdvice(
+        isConstructor(),
+        packageName+".ConstructorAdvice"
+    );
     transformation.applyAdvice(isMethod().and(named("find")).and(takesArguments(9)),packageName+".MethodAdvice");
     transformation.applyAdvice(isMethod().and(named("insert")).and(takesArguments(4)),packageName+".MethodAdvice");
     transformation.applyAdvice(isMethod().and(named("insertImpl")),packageName+".MethodAdvice");
