@@ -1,0 +1,18 @@
+muzzle {
+  pass {
+    group = "org.mongodb"
+    module = "mongo-java-driver"
+    versions = "[2.14.2,3.0.0)"
+    assertInverse = true
+  }
+
+}
+
+apply from: "$rootDir/gradle/java.gradle"
+
+addTestSuiteForDir('latestDepTest', 'test')
+
+dependencies {
+  compileOnly group: 'org.mongodb', name: 'mongo-java-driver', version: '2.14.2'
+  compileOnly group: 'org.mongodb', name: 'bson', version: '2.14.2'
+}
