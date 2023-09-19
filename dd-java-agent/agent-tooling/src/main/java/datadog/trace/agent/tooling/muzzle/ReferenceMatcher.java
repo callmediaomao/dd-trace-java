@@ -4,19 +4,18 @@ import datadog.trace.agent.tooling.bytebuddy.SharedTypePools;
 import datadog.trace.agent.tooling.muzzle.Reference.Mismatch;
 import datadog.trace.api.Pair;
 import de.thetaphi.forbiddenapis.SuppressForbidden;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import net.bytebuddy.description.field.FieldDescription;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.pool.TypePool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /** Matches a set of references against a classloader. */
 public class ReferenceMatcher {
+  private static final Logger log =  LoggerFactory.getLogger(ReferenceMatcher.class);
   public static final ReferenceMatcher NO_REFERENCES = new ReferenceMatcher();
 
   private final Reference[] references;
@@ -116,6 +115,7 @@ public class ReferenceMatcher {
       }
       return checkMatch(reference, resolution.resolve(), mismatches);
     } catch (final Exception e) {
+      log.error("-----e.getMessage:{}----",e.getMessage());
       if (e.getMessage().startsWith("Cannot resolve type description for ")) {
         // bytebuddy throws an illegal state exception with this message if it cannot resolve types
         // TODO: handle missing type resolutions without catching bytebuddy's exceptions

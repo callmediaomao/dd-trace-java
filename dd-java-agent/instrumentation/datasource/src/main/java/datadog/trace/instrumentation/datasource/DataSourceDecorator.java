@@ -1,8 +1,6 @@
 package datadog.trace.instrumentation.datasource;
 
 import datadog.trace.api.Config;
-import datadog.trace.api.cache.DDCache;
-import datadog.trace.api.cache.DDCaches;
 import datadog.trace.api.naming.SpanNaming;
 import datadog.trace.bootstrap.ContextStore;
 import datadog.trace.bootstrap.instrumentation.api.AgentSpan;
@@ -21,7 +19,6 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-import static datadog.trace.bootstrap.instrumentation.api.Tags.DB_TYPE;
 import static datadog.trace.bootstrap.instrumentation.api.Tags.PEER_PORT;
 
 public class DataSourceDecorator extends ClientDecorator {
@@ -33,8 +30,6 @@ public class DataSourceDecorator extends ClientDecorator {
   public static final String DATASOURCE = "datasource";
 
   public static final CharSequence DATASOURCE_CHAR = UTF8BytesString.create(DATASOURCE);
-
-  private static final DDCache<String, NamingEntry> CACHE = DDCaches.newFixedSizeCache(16);
 
   public static final CharSequence OPERATION_NAME =
       UTF8BytesString.create(SpanNaming.instance().namingSchema().cache().operation(DATASOURCE));
@@ -111,18 +106,6 @@ public class DataSourceDecorator extends ClientDecorator {
       }
     }
     return span;
-  }
-
-  protected void processDatabaseType(AgentSpan span, String dbType) {
-    final NamingEntry namingEntry = CACHE.computeIfAbsent(dbType, NamingEntry::new);
-    span.setTag(DB_TYPE, namingEntry.getDbType());
-    postProcessServiceAndOperationName(span, namingEntry);
-  }
-
-  protected void postProcessServiceAndOperationName(
-      AgentSpan span, NamingEntry namingEntry) {
-    span.setServiceName(namingEntry.getService());
-    span.setOperationName(namingEntry.getOperation());
   }
 
   public String dbClientService(final String instanceName) {

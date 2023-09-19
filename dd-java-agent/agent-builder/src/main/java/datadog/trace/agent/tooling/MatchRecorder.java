@@ -1,12 +1,13 @@
 package datadog.trace.agent.tooling;
 
-import static datadog.trace.agent.tooling.bytebuddy.matcher.ClassLoaderMatchers.ANY_CLASS_LOADER;
-import static datadog.trace.agent.tooling.bytebuddy.matcher.ClassLoaderMatchers.hasClassNamed;
-
 import datadog.trace.agent.tooling.context.FieldBackedContextMatcher;
-import java.util.BitSet;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+
+import java.util.BitSet;
+
+import static datadog.trace.agent.tooling.bytebuddy.matcher.ClassLoaderMatchers.ANY_CLASS_LOADER;
+import static datadog.trace.agent.tooling.bytebuddy.matcher.ClassLoaderMatchers.hasClassNamed;
 
 /** Records a single match result in the bit-set. */
 abstract class MatchRecorder {

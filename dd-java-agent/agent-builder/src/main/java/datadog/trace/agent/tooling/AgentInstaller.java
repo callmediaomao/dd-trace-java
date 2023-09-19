@@ -319,7 +319,7 @@ public class AgentInstaller {
         final ClassLoader classLoader,
         final JavaModule module,
         final boolean loaded) {
-            log.debug("-----onIgnored: {}, module: {}, loaded: {}", typeDescription.getName(),module.getActualName(),loaded);
+//            log.debug("-----onIgnored: {}, loaded: {}", typeDescription.getName(),loaded);
     }
 
     @Override
@@ -328,7 +328,7 @@ public class AgentInstaller {
         final ClassLoader classLoader,
         final JavaModule module,
         final boolean loaded) {
-            log.debug("-----onComplete: {},module: {}, loaded: {} ", typeName,module.getActualName(),loaded);
+//            log.debug("-----onComplete: {}, loaded: {} ", typeName,loaded);
     }
 
     @Override
@@ -337,7 +337,7 @@ public class AgentInstaller {
         final ClassLoader classLoader,
         final JavaModule module,
         final boolean loaded) {
-            log.debug("onDiscovery {},module: {}, loaded: {}", typeName,module.getActualName(),loaded);
+//            log.debug("-------onDiscovery {}, loaded: {}", typeName,loaded);
     }
   }
 

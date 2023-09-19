@@ -1,29 +1,25 @@
 package datadog.trace.agent.tooling;
 
-import static datadog.trace.agent.tooling.bytebuddy.DDTransformers.defaultTransformers;
-import static datadog.trace.agent.tooling.bytebuddy.matcher.ClassLoaderMatchers.ANY_CLASS_LOADER;
-import static datadog.trace.agent.tooling.bytebuddy.matcher.NameMatchers.named;
-import static datadog.trace.agent.tooling.bytebuddy.matcher.NameMatchers.namedOneOf;
-import static net.bytebuddy.matcher.ElementMatchers.isSynthetic;
-import static net.bytebuddy.matcher.ElementMatchers.not;
-
 import datadog.trace.agent.tooling.bytebuddy.ExceptionHandlers;
 import datadog.trace.agent.tooling.context.FieldBackedContextInjector;
 import datadog.trace.agent.tooling.context.FieldBackedContextMatcher;
 import datadog.trace.agent.tooling.context.FieldBackedContextRequestRewriter;
 import datadog.trace.agent.tooling.muzzle.MuzzleCheck;
 import datadog.trace.api.InstrumenterConfig;
-import java.lang.instrument.ClassFileTransformer;
-import java.lang.instrument.Instrumentation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.matcher.ElementMatcher;
+
+import java.lang.instrument.ClassFileTransformer;
+import java.lang.instrument.Instrumentation;
+import java.util.*;
+
+import static datadog.trace.agent.tooling.bytebuddy.DDTransformers.defaultTransformers;
+import static datadog.trace.agent.tooling.bytebuddy.matcher.ClassLoaderMatchers.ANY_CLASS_LOADER;
+import static datadog.trace.agent.tooling.bytebuddy.matcher.NameMatchers.named;
+import static datadog.trace.agent.tooling.bytebuddy.matcher.NameMatchers.namedOneOf;
+import static net.bytebuddy.matcher.ElementMatchers.isSynthetic;
+import static net.bytebuddy.matcher.ElementMatchers.not;
 
 /** Builds multiple instrumentations into a single combining-matcher and splitting-transformer. */
 public final class CombiningTransformerBuilder extends AbstractTransformerBuilder {
@@ -123,6 +119,7 @@ public final class CombiningTransformerBuilder extends AbstractTransformerBuilde
           new VisitingTransformer(
               new FieldBackedContextRequestRewriter(contextStore, instrumenter.name())));
 
+      // 注册context
       registerContextStoreInjection(instrumenter, contextStore);
     }
 

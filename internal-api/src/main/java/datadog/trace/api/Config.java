@@ -3129,6 +3129,9 @@ public class Config {
           SpanNaming.SCHEMA_MIN_VERSION);
       parsedVersion = SpanNaming.SCHEMA_MIN_VERSION;
     }
+    if (log.isDebugEnabled()){
+      log.debug("----------parsedVersion:{}----------",parsedVersion);
+    }
     return parsedVersion;
   }
 

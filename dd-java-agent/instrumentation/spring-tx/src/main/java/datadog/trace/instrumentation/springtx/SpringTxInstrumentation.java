@@ -23,7 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static datadog.trace.agent.tooling.bytebuddy.matcher.NameMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.*;
+import static net.bytebuddy.matcher.ElementMatchers.isMethod;
+import static net.bytebuddy.matcher.ElementMatchers.takesArgument;
 
 @AutoService(Instrumenter.class)
 public class SpringTxInstrumentation extends Instrumenter.Tracing
@@ -53,27 +54,20 @@ public class SpringTxInstrumentation extends Instrumenter.Tracing
 
   @Override
   public void adviceTransformations(AdviceTransformation transformation) {
+    log.debug("-------进入方法！！！--------");
     transformation.applyAdvice(
         isMethod()
-            .and(named("getTransaction")),
+            .and(named("getTransaction"))
+            .and(takesArgument(0,named("org.springframework.transaction.TransactionDefinition"))),
         packageName + ".GetTransactionAdvice"
     );
 
     transformation.applyAdvice(
         isMethod()
-            .and(named("commit").or(named("rollback"))),
+            .and(named("commit").or(named("rollback")))
+            .and(takesArgument(0,named("org.springframework.transaction.TransactionStatus"))),
         packageName + ".CommintOrRollbackAdvice"
     );
+    log.debug("--------方法退出！！！-------");
   }
-
-
-//  @Override
-//  public String hierarchyMarkerType() {
-//    return CLASS_NAME;
-//  }
-//
-//  @Override
-//  public ElementMatcher<TypeDescription> hierarchyMatcher() {
-//    return extendsClass(named(CLASS_NAME));
-//  }
 }

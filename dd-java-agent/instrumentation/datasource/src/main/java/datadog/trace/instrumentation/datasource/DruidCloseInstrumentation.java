@@ -35,8 +35,7 @@ public class DruidCloseInstrumentation extends Instrumenter.Tracing
 
   public String[] helperClassNames() {
     return new String[]{
-        packageName+".DataSourceDecorator",
-        packageName+".NamingEntry",
+        packageName+".DruidDataSourceDecorator",
     };
   }
 

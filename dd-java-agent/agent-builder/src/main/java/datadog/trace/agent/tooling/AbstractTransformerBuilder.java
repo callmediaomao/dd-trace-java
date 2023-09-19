@@ -1,21 +1,20 @@
 package datadog.trace.agent.tooling;
 
-import static datadog.trace.agent.tooling.bytebuddy.matcher.ClassLoaderMatchers.ANY_CLASS_LOADER;
-import static datadog.trace.agent.tooling.bytebuddy.matcher.ClassLoaderMatchers.hasClassNamed;
-import static datadog.trace.agent.tooling.bytebuddy.matcher.ClassLoaderMatchers.hasClassNamedOneOf;
-import static datadog.trace.agent.tooling.bytebuddy.matcher.HierarchyMatchers.declaresAnnotation;
-import static datadog.trace.agent.tooling.bytebuddy.matcher.NameMatchers.namedOneOf;
-import static net.bytebuddy.matcher.ElementMatchers.not;
-
-import java.security.ProtectionDomain;
-import java.util.HashMap;
-import java.util.Map;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.asm.AsmVisitorWrapper;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.utility.JavaModule;
+
+import java.security.ProtectionDomain;
+import java.util.HashMap;
+import java.util.Map;
+
+import static datadog.trace.agent.tooling.bytebuddy.matcher.ClassLoaderMatchers.*;
+import static datadog.trace.agent.tooling.bytebuddy.matcher.HierarchyMatchers.declaresAnnotation;
+import static datadog.trace.agent.tooling.bytebuddy.matcher.NameMatchers.namedOneOf;
+import static net.bytebuddy.matcher.ElementMatchers.not;
 
 abstract class AbstractTransformerBuilder
     implements Instrumenter.TransformerBuilder, Instrumenter.AdviceTransformation {
@@ -93,6 +92,7 @@ abstract class AbstractTransformerBuilder
       String hierarchyHint = ((Instrumenter.ForTypeHierarchy) instrumenter).hierarchyMarkerType();
       activation = null != hierarchyHint ? hasClassNamed(hierarchyHint) : ANY_CLASS_LOADER;
     } else if (instrumenter instanceof Instrumenter.ForSingleType) {
+      // hasClassResourceNames.indexof
       activation = hasClassNamed(((Instrumenter.ForSingleType) instrumenter).instrumentedType());
     } else if (instrumenter instanceof Instrumenter.ForKnownTypes) {
       activation =

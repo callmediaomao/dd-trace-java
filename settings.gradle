@@ -417,6 +417,7 @@ include ':dd-java-agent:instrumentation:axis-1'
 //include ':dd-java-agent:instrumentation:tomcat-7.x-8.x'
 include ':dd-java-agent:instrumentation:clickhouse-0.3.1'
 include ':dd-java-agent:instrumentation:spring-tx'
+//include ':dd-java-agent:instrumentation:hutool-http-5.8'
 //include ':dd-java-agent:instrumentation:taobao-hsf'  阿里云仓库找不到该依赖
 
 // benchmark

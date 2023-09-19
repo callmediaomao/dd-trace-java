@@ -1,3 +1,12 @@
+//muzzle {
+//  pass {
+//    group = 'org.springframework'
+//    module = 'spring-tx'
+//    versions = "5.0.4.RELEASE"
+//    assertInverse = true
+//  }
+//}
+
 apply from: "$rootDir/gradle/java.gradle"
 apply plugin: 'call-site-instrumentation'
 

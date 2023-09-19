@@ -1,6 +1,7 @@
 package datadog.trace.instrumentation.datasource;
 
 import com.google.auto.service.AutoService;
+import com.zaxxer.hikari.HikariDataSource;
 import datadog.trace.agent.tooling.Instrumenter;
 import datadog.trace.bootstrap.InstrumentationContext;
 import datadog.trace.bootstrap.instrumentation.api.AgentScope;
@@ -15,10 +16,7 @@ import java.util.Map;
 
 import static datadog.trace.bootstrap.instrumentation.api.AgentTracer.activateSpan;
 import static datadog.trace.bootstrap.instrumentation.api.AgentTracer.startSpan;
-import static net.bytebuddy.matcher.ElementMatchers.isMethod;
-import static net.bytebuddy.matcher.ElementMatchers.isPublic;
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.takesNoArguments;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
 
 @AutoService(Instrumenter.class)
@@ -36,8 +34,8 @@ public class HikariGetConInstrumentation extends Instrumenter.Tracing
 
   public String[] helperClassNames() {
     return new String[]{
-        packageName+".DataSourceDecorator",
-        packageName+".NamingEntry",
+//        packageName+".DataSourceDecorator",
+        packageName+".HikariDataSourceDecorator",
     };
   }
 
@@ -58,20 +56,24 @@ public class HikariGetConInstrumentation extends Instrumenter.Tracing
 
     @Advice.OnMethodExit(onThrowable = Throwable.class, suppress = Throwable.class)
     public static void stopSpan(
+        @Advice.This final HikariDataSource hikariDataSource,
         @Advice.Return final Connection connection,
         @Advice.Thrown final Throwable throwable) {
 
       AgentSpan span = startSpan("datasource", "datasource.getConnection");
-      DataSourceDecorator.DECORATE.afterStart(span);
-      DataSourceDecorator.DECORATE.onConnection(span,connection, InstrumentationContext.get(Connection.class,DBInfo.class));
+      HikariDataSourceDecorator.DECORATE.afterStart(span);
+      HikariDataSourceDecorator.DECORATE.onConnection(span,connection, InstrumentationContext.get(Connection.class,DBInfo.class));
       span.setSpanType("datasource");
       AgentScope scope = activateSpan(span);
-
+      HikariDataSourceDecorator.DECORATE.getConfigMetrics(span,hikariDataSource);
+      HikariDataSourceDecorator.DECORATE.getPoolMetrics(span,hikariDataSource);
       span.setTag(Tags.COMPONENT, DataSourceConstant.HIKARI);
-      DataSourceDecorator.DECORATE.onError(scope, throwable);
-      DataSourceDecorator.DECORATE.beforeFinish(scope);
+      HikariDataSourceDecorator.DECORATE.onError(scope, throwable);
+      HikariDataSourceDecorator.DECORATE.beforeFinish(scope);
       scope.close();
       scope.span().finish();
     }
+
+
   }
 }

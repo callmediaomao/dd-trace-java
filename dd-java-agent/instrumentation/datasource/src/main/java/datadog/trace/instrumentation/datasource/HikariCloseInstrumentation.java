@@ -31,8 +31,8 @@ public class HikariCloseInstrumentation extends Instrumenter.Tracing
 
   public String[] helperClassNames() {
     return new String[]{
-        packageName+".DataSourceDecorator",
-        packageName+".NamingEntry",
+//        packageName+".DataSourceDecorator",
+        packageName+".HikariDataSourceDecorator",
     };
   }
 
@@ -62,8 +62,8 @@ public class HikariCloseInstrumentation extends Instrumenter.Tracing
     ) {
       try {
         AgentSpan span = startSpan("datasource", "datasource.close");
-        DataSourceDecorator.DECORATE.afterStart(span);
-        DataSourceDecorator.DECORATE.onConnection(span,connection, InstrumentationContext.get(Connection.class, DBInfo.class));
+        HikariDataSourceDecorator.DECORATE.afterStart(span);
+        HikariDataSourceDecorator.DECORATE.onConnection(span,connection, InstrumentationContext.get(Connection.class, DBInfo.class));
         AgentScope agentScope = activateSpan(span);
         span.setTag(Tags.COMPONENT, DataSourceConstant.HIKARI);
         return agentScope;
@@ -79,8 +79,8 @@ public class HikariCloseInstrumentation extends Instrumenter.Tracing
       if (scope == null) {
         return;
       }
-      DataSourceDecorator.DECORATE.onError(scope, throwable);
-      DataSourceDecorator.DECORATE.beforeFinish(scope);
+      HikariDataSourceDecorator.DECORATE.onError(scope, throwable);
+      HikariDataSourceDecorator.DECORATE.beforeFinish(scope);
       scope.close();
       scope.span().finish();
     }
